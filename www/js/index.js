@@ -1,3 +1,6 @@
+var torre = "♖";
+var tpos = 18;
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -35,22 +38,20 @@ var app = {
                 }else if(i == 0){
                     tablero.append("<th>"+j+"</th>");
                 }else if(j == 0){
-                    
                     tablero.append("<tr></tr> ");
                     tablero.append("<th>"+i+"</th>");
                 }else{
                     
                     if(j > 8){
-                        
                         tablero.append("<tr></tr>");
                     }else{
                         if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
-                            var cela = $("<td id="+i+j+" class='whire'></td>");    
+                            var cela = $("<td id="+i+j+" class='white'></td>");    
                         }else{
                             var cela = $("<td id="+i+j+" class='black'></td>");
 
                         }
-                        cela.click(myFunction);
+                        cela.click(mov);
                         tablero.append(cela);
                     }
                 }
@@ -62,6 +63,6 @@ var app = {
 app.initialize();
 app.crearTablero();
 
-function myFunction(event){
+function mov(event){
     alert(event.target.id);
 }
