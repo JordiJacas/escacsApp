@@ -1,0 +1,22 @@
+td{
+	border: 1px solid;
+	width: 20px;
+	height: 20px;
+}
+
+th{
+	width: 20px;
+	height: 20px;
+}
+
+table{
+	border-collapse: collapse;
+}
+
+.black{
+	background-color: black;
+}
+
+.white{
+	background-color: white;
+}
