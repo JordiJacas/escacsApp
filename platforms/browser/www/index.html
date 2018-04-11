@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+        <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval';
+        style-src 'self' 'unsafe-inline';
+        media-src *;
+        img-src 'self' data: content:;
+        script-src * 'unsafe-eval' 'unsafe-inline';
+        connect-src * 'unsafe-eval' 'unsafe-inline';">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -17,6 +24,9 @@
                 <p class="event received">Device is Ready</p>
             </div>
         </div>
+
+        <button id="login">login</button>
+        <button id="logout">logout</button>
 
         <table id="tablero">
         </table>

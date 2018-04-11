@@ -66,3 +66,33 @@ app.crearTablero();
 function mov(event){
     alert(event.target.id);
 }
+
+var url = "http://localhost:8080";
+var user = {email: "user@gmail.com",password: "123456"};
+var token;
+
+var api = {
+    login: function(){
+        $.getJSON(url+"/api/usuarios/login?email="+user["email"]+"&password="+user["password"],function(data) {
+            alert("token="+data["token"]);
+            token = data["token"];
+        }).fail( function(e) {
+            alert(data["token"]);
+            console.log(e);
+        });
+    },
+
+    logout: function(){
+        $.getJSON(url+"/api/usuarios/logout?token="+token,function(data) {
+            alert(data["mensaje"]);
+        }).fail( function(e) {
+            alert(data["mensaje"]);
+            console.log(e);
+        });
+    },
+};
+
+$('#login').click(api.login);
+$('#logout').click(api.logout);
+
+
