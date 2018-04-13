@@ -4,6 +4,11 @@ td{
 	height: 40px;
 }
 
+#divLogout{
+	text-align: right;
+	padding: 5px 5px 5px 5px;	
+}
+
 table{
 	border-collapse: collapse;
 	margin: auto;
@@ -15,4 +20,8 @@ table{
 
 .white{
 	background-color: white;
+}
+
+body{
+	text-align: center;
 }
