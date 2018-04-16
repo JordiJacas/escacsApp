@@ -19,6 +19,7 @@
  var token;
  var text = $("#text");
  var friends = $("#friends");
+ var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
  var app = {
     // Application Constructor
     initialize: function() {
@@ -50,10 +51,10 @@
             var email = $(this).find("input[name='email']").val();
             var password = $(this).find("input[name='password']").val();
 
-            $.getJSON("https://escacsjordi.herokuapp.com/api/usuarios/login?email="+email+"&password="+password,function(data) {
+            $.getJSON(url+"usuarios/login?email="+email+"&password="+password,function(data) {
                 text.text(data.mensaje);
                 token = data.token;
-                console.log(data.token);
+                friends.empty();
                 conectado();
 
             }).fail( function(e) {
@@ -64,7 +65,7 @@
 
         $('#logout').click(function(e){
             e.preventDefault();
-            $.getJSON("https://escacsjordi.herokuapp.com/api/usuarios/logout?token="+token,function(data) {
+            $.getJSON(url+"usuarios/logout?token="+token,function(data) {
                 text.text(data.mensaje);
                 friends.empty();
             })
@@ -74,17 +75,19 @@
 
 
 function conectado(){
-    $.getJSON("https://escacsjordi.herokuapp.com/api/usuarios/conectados?token="+token,function(data) {
+    $.getJSON(url+"usuarios/conectados?token="+token,function(data) {
+        friends.append()
         if(data.usernames === undefined){friends.text(data.mensaje);}
         else{
-
             for(var i = 0; i < data.usernames.length; i++){
-                friends.append("<li>"+data.usernames[i]+"</li>")
+                friends.append("<li>"+data.usernames[i]+
+                                "--- <a href='"+url+"invitacion/invitar?token="
+                                +token+"&name="
+                                +data.usernames[i]+"'>Invite</a></li>");
             }
         }
     })
 }
-
 
 function crearTablero(){
     tablero = $('#tablero');
