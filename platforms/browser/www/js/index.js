@@ -17,7 +17,8 @@
  * under the License.
  */
  var token;
- var text;
+ var text = $("#text");
+ var friends = $("#friends");
  var app = {
     // Application Constructor
     initialize: function() {
@@ -50,7 +51,6 @@
             var password = $(this).find("input[name='password']").val();
 
             $.getJSON("https://escacsjordi.herokuapp.com/api/usuarios/login?email="+email+"&password="+password,function(data) {
-                text = $("#text");
                 text.text(data.mensaje);
                 token = data.token;
                 console.log(data.token);
@@ -65,9 +65,8 @@
         $('#logout').click(function(e){
             e.preventDefault();
             $.getJSON("https://escacsjordi.herokuapp.com/api/usuarios/logout?token="+token,function(data) {
-                text = $("#text");
                 text.text(data.mensaje);
-                token;
+                friends.empty();
             })
         });
     }
@@ -76,8 +75,14 @@
 
 function conectado(){
     $.getJSON("https://escacsjordi.herokuapp.com/api/usuarios/conectados?token="+token,function(data) {
-                console.log(data);
-            })
+        if(data.usernames === undefined){friends.text(data.mensaje);}
+        else{
+
+            for(var i = 0; i < data.usernames.length; i++){
+                friends.append("<li>"+data.usernames[i]+"</li>")
+            }
+        }
+    })
 }
 
 
