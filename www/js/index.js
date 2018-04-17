@@ -19,6 +19,7 @@
  var token;
  var text = $("#text");
  var friends = $("#friends");
+ var invitar = $("#invite");
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
  var app = {
     // Application Constructor
@@ -56,6 +57,7 @@
                 token = data.token;
                 friends.empty();
                 conectado();
+                invitaciones();
 
             }).fail( function(e) {
                 alert("error");
@@ -108,6 +110,23 @@ function crearTablero(){
             }
         }
     }
+}
+
+function invitaciones(){
+    $.getJSON(url+"invitacion/ver?token="+token,function(data) {
+        for(var i = 0; i < data.mensaje.length; i++){
+            invitar.append("<li>"+data.mensaje[i].name+
+                            "--- <a href='"+url+"invitacion/responder?token="
+                                +token+"&name="
+                                +data.mensaje[i].name+
+                                "&respuesta=1'>Aceptar</a> ---- <a href='"
+                                +url+"invitacion/responder?token="
+                                +token+"&name="
+                                +data.mensaje[i].name+
+                                "&respuesta=0'>Rechazar</a></li>");
+        }
+
+    })    
 }
 
 app.initialize();

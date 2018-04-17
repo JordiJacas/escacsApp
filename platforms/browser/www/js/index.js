@@ -19,6 +19,7 @@
  var token;
  var text = $("#text");
  var friends = $("#friends");
+ var invitar = $("#invite");
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
  var app = {
     // Application Constructor
@@ -56,6 +57,7 @@
                 token = data.token;
                 friends.empty();
                 conectado();
+                invitaciones();
 
             }).fail( function(e) {
                 alert("error");
@@ -70,9 +72,17 @@
                 friends.empty();
             })
         });
+
+        $('.enviar').click(function(e){
+            
+            e.preventDefault();
+            var user = e.target.id;
+            console.log(user);
+        })
     }
 };
 
+//"+url+"invitacion/invitar?token="+token+"&name="+data.usernames[i]+"
 
 function conectado(){
     $.getJSON(url+"usuarios/conectados?token="+token,function(data) {
@@ -81,9 +91,7 @@ function conectado(){
         else{
             for(var i = 0; i < data.usernames.length; i++){
                 friends.append("<li>"+data.usernames[i]+
-                                "--- <a href='"+url+"invitacion/invitar?token="
-                                +token+"&name="
-                                +data.usernames[i]+"'>Invite</a></li>");
+                                "--- <a class='enviar'>Invite</a></li>");
             }
         }
     })
@@ -108,6 +116,24 @@ function crearTablero(){
             }
         }
     }
+}
+
+function invitaciones(){
+    $.getJSON(url+"invitacion/ver?token="+token,function(data) {
+        console.log(data.mensaje);
+        /*for(var i = 0; i < data.mensaje.length; i++){
+            invitar.append("<li>"+data.mensaje[i].name+
+                            "--- <a href='"+url+"invitacion/responder?token="
+                                +token+"&name="
+                                +data.mensaje[i].name+
+                                "&respuesta=1'>Aceptar</a> ---- <a href='"
+                                +url+"invitacion/responder?token="
+                                +token+"&name="
+                                +data.mensaje[i].name+
+                                "&respuesta=0'>Rechazar</a></li>");
+        }*/
+
+    })    
 }
 
 app.initialize();
