@@ -11,7 +11,7 @@ td{
 
 table{
 	border-collapse: collapse;
-	margin: auto;
+	margin: 50px;
 }
 
 .black{
@@ -23,5 +23,4 @@ table{
 }
 
 body{
-	text-align: center;
 }

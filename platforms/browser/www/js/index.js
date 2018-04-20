@@ -17,10 +17,12 @@
  * under the License.
  */
  var token;
+ var rival;
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
+
  var app = {
     // Application Constructor
     initialize: function() {
@@ -46,6 +48,7 @@
 
         console.log('Received Event: ' + id);
         crearTablero();
+        $('#logout').hide();
 
         $("form").submit(function(e){
             e.preventDefault();
@@ -63,6 +66,9 @@
                 alert("error");
                 console.log(e);
             });
+
+            $('form').hide();
+            $('#logout').show();
         });
 
         $('#logout').click(function(e){
@@ -70,73 +76,147 @@
             $.getJSON(url+"usuarios/logout?token="+token,function(data) {
                 text.text(data.mensaje);
                 friends.empty();
+              
             })
+            $('#logout').hide();
+            $('form').show();
         });
 
-        $('.enviar').click(function(e){
-            
+        $('a').click(function(e){
             e.preventDefault();
-            var user = e.target.id;
-            console.log(user);
+            console.log("hola");
+            
         })
     }
 };
 
-//"+url+"invitacion/invitar?token="+token+"&name="+data.usernames[i]+"
 
 function conectado(){
+    var li = $('<li></li>');
+
     $.getJSON(url+"usuarios/conectados?token="+token,function(data) {
         friends.append()
         if(data.usernames === undefined){friends.text(data.mensaje);}
         else{
             for(var i = 0; i < data.usernames.length; i++){
-                friends.append("<li>"+data.usernames[i]+
-                                "--- <a class='enviar'>Invite</a></li>");
+                var a = $("<a id='"+data.usernames[i]+"' href='#'>Invite</a>").click(function(e){
+                    e.preventDefault();
+                    $.getJSON(url+"invitacion/invitar?token="+token+"&name="+e.target.id,function(data) {
+                    console.log(data.mensaje);
+                    })
+                })
+
+                li.append(data.usernames[i]);
+                li.append(" --- ");
+                li.append(a);
+                friends.append(li);
             }
         }
     })
 }
 
+function partida(){
+   
+       
+          
+};
+
 function crearTablero(){
+
+
+    var torre = "t";
     tablero = $('#tablero');
-    for(var i=0;i<=8;i++){
-        for(var j=0;j<=8;j++){ 
-            if(i == 0 && j ==0){tablero.append("<th></th>");}
-            else if(i == 0){tablero.append("<th>"+j+"</th>");}
-            else if(j == 0){
-                tablero.append("<tr></tr> ");
-                tablero.append("<th>"+i+"</th>");
-            }else{
-                if(j > 8){tablero.append("<tr></tr>");}
-                else{
-                    if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){var cela = $("<td id="+i+j+" class='white'></td>");}
-                    else{var cela = $("<td id="+i+j+" class='black'></td>");}
-                    tablero.append(cela);
+
+    $.getJSON(url+"tablero/ver?token="+token+"&name="+rival,function(data) {
+        for(var i=0;i<=8;i++){
+            for(var j=0;j<=8;j++){ 
+                if(i == 0 && j ==0){tablero.append("<th></th>");}
+                else if(i == 0){tablero.append("<th>"+j+"</th>");}
+                else if(j == 0){
+                    tablero.append("<tr></tr> ");
+                    tablero.append("<th>"+i+"</th>");
+                }else{
+                    if(j > 8){tablero.append("<tr></tr>");}
+                    else{
+                        if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
+                            if(data.tablero && data.tablero.fila == i && data.tablero.columna == j && data.tablero.color == "b"){
+                                var cela = $("<td id="+i+j+" class='white'>"+torre+"</td>");
+                            }
+                            var cela = $("<td id="+i+j+" class='white'></td>");
+                        }else{
+                            if(data.tablero && data.tablero.fila == i && data.tablero.columna == j && data.tablero.color == "n"){
+                                var cela = $("<td id="+i+j+" class='black'>"+torre+"</td>");
+                            }
+                             var cela = $("<td id="+i+j+" class='black'></td>");
+                        }
+                    }
+                        tablero.append(cela);
                 }
             }
         }
-    }
+    }); 
 }
 
 function invitaciones(){
-    $.getJSON(url+"invitacion/ver?token="+token,function(data) {
-        console.log(data.mensaje);
-        /*for(var i = 0; i < data.mensaje.length; i++){
-            invitar.append("<li>"+data.mensaje[i].name+
-                            "--- <a href='"+url+"invitacion/responder?token="
-                                +token+"&name="
-                                +data.mensaje[i].name+
-                                "&respuesta=1'>Aceptar</a> ---- <a href='"
-                                +url+"invitacion/responder?token="
-                                +token+"&name="
-                                +data.mensaje[i].name+
-                                "&respuesta=0'>Rechazar</a></li>");
-        }*/
 
-    })    
+    var li = $('<li></li>');
+
+    $.getJSON(url+"invitacion/ver?token="+token,function(data) {
+        for(var i = 0; i < data.mensaje.length; i++){
+
+            var a1 = $("<a id='"+data.mensaje[i].name+"' href='#'>Aceptar</a>").click(function(e){
+                    e.preventDefault();
+                    $.getJSON(url+"invitacion/responder?token="+token+"&name="+e.target.id+
+                                "&respuesta=1'",function(data) {
+                    console.log(data.mensaje);
+                    })
+
+                    rival = e.target.id;
+                })
+
+
+            var a2 = $("<a id='"+data.mensaje[i].name+"' href='#'>Rechazar</a>").click(function(e){
+                    e.preventDefault();
+                    $.getJSON(url+"invitacion/responder?token="+token+"&name="+e.target.id+
+                                "&respuesta=0'",function(data) {
+                    console.log(data.mensaje);
+                    })
+                })
+
+            li.append(data.mensaje[i].name);
+            li.append(" --- ");
+            li.append(a1);
+            li.append(" --- ");
+            li.append(a2);
+
+            invitar.append(li);
+        }
+    });
+}
+
+function invitaciones(){
+
+    var li = $('<li></li>');
+
+    $.getJSON(url+"invitacion/ver?token="+token,function(data) {
+        for(var i = 0; i < data.mensaje.length; i++){
+
+            var a1 = $("<a id='"+data.mensaje[i].name+"' href='#'>Aceptar</a>").click(function(e){
+                    e.preventDefault();
+                    $.getJSON(url+"tablero/ver?token="+token+"&name="+e.target.id+
+                                "&respuesta=1'",function(data) {
+                    console.log(data.mensaje);
+                    });
+            });
+
+            li.append(data.mensaje[i].name);
+            li.append(" --- ");
+            li.append(a1);
+
+            invitar.append(li);
+        }
+    });
+
 }
 
 app.initialize();
-
-
-

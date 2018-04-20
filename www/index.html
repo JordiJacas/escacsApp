@@ -41,10 +41,13 @@
         <title>Escacs</title>
     </head>
     <body>
+        
+        <div id="divLogout">
+            <input id="logout" type="submit" name="submit" value="Logout" class="btn btn-danger">
+        </div>
         <div class="app">
-            <div id="divLogout">
-                <input id="logout" type="submit" name="submit" value="Logout" class="btn btn-danger">
-            </div>
+
+
             <h1>Apache Cordova</h1>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
@@ -57,21 +60,29 @@
             <input type="password" name="password" placeholder="Password" required>
             <input id="submit" type="submit" name="submit" value="Login" class="btn btn-success">
         </form>
+        
 
+        <div class="row">
 
-        <p id="text"></p>
+            <div class="col-md-6">
+                <p id="text"></p>
 
-        <table id="tablero"></table>
+                <table id="tablero"></table>
+            </div>
 
-        <div id="list">
-            <br>
-            <p><b>Conectados</b></p>
-            <ul id="friends"></ul>
+            <div class="col-md-6">
+                <div id="list">
+                    <br>
+                    <p><b>Conectados</b></p>
+                    <ul id="friends"></ul>
 
-            <br>
-            <p><b>Invitaciones</b></p>
-            <ul id="invite"></ul>
+                    <br>
+                    <p><b>Invitaciones</b></p>
+                    <ul id="invite"></ul>
+                </div>
+            </div>
         </div>
+
 
 
         <script type="text/javascript" src="cordova.js"></script>
