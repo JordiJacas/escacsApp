@@ -47,8 +47,10 @@
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-        crearTablero();
+
         $('#logout').hide();
+        //$('table').hide();
+        crearTablero();
 
         $("form").submit(function(e){
             e.preventDefault();
@@ -82,11 +84,9 @@
             $('form').show();
         });
 
-        $('a').click(function(e){
+        $('td').click(function(e){
             e.preventDefault();
-            console.log("hola");
-            
-        })
+            alert(e.target.id)})
     }
 };
 
@@ -115,19 +115,15 @@ function conectado(){
     })
 }
 
-function partida(){
-   
-       
-          
-};
-
 function crearTablero(){
 
-
+    rival = "user2";
+    token = "c0393c0a3046b02294e86fae47753a81";
     var torre = "t";
     tablero = $('#tablero');
 
     $.getJSON(url+"tablero/ver?token="+token+"&name="+rival,function(data) {
+
         for(var i=0;i<=8;i++){
             for(var j=0;j<=8;j++){ 
                 if(i == 0 && j ==0){tablero.append("<th></th>");}
@@ -139,15 +135,21 @@ function crearTablero(){
                     if(j > 8){tablero.append("<tr></tr>");}
                     else{
                         if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
-                            if(data.tablero && data.tablero.fila == i && data.tablero.columna == j && data.tablero.color == "b"){
-                                var cela = $("<td id="+i+j+" class='white'>"+torre+"</td>");
+                            console.log(data.tablero[0].fila+data.tablero[0].columna)
+                            if(data.tablero && data.tablero[0].fila == i && data.tablero[0].columna == j){    
+                                var cela = $("<td id="+i+j+" class='white'>hola</td>");
+                                console.log("hola");
+                            
+                            }else{
+                                var cela = $("<td id="+i+j+" class='white'></td>");
                             }
-                            var cela = $("<td id="+i+j+" class='white'></td>");
                         }else{
-                            if(data.tablero && data.tablero.fila == i && data.tablero.columna == j && data.tablero.color == "n"){
-                                var cela = $("<td id="+i+j+" class='black'>"+torre+"</td>");
-                            }
+                            if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j){
+                                var cela = $("<td id="+i+j+" class='black'>hola</td>");
+                                console.log("adios");
+                            }else{
                              var cela = $("<td id="+i+j+" class='black'></td>");
+                            }
                         }
                     }
                         tablero.append(cela);
@@ -165,13 +167,15 @@ function invitaciones(){
         for(var i = 0; i < data.mensaje.length; i++){
 
             var a1 = $("<a id='"+data.mensaje[i].name+"' href='#'>Aceptar</a>").click(function(e){
-                    e.preventDefault();
+
                     $.getJSON(url+"invitacion/responder?token="+token+"&name="+e.target.id+
                                 "&respuesta=1'",function(data) {
                     console.log(data.mensaje);
                     })
 
                     rival = e.target.id;
+                    $('table').show();
+                    crearTablero();
                 })
 
 
@@ -192,31 +196,6 @@ function invitaciones(){
             invitar.append(li);
         }
     });
-}
-
-function invitaciones(){
-
-    var li = $('<li></li>');
-
-    $.getJSON(url+"invitacion/ver?token="+token,function(data) {
-        for(var i = 0; i < data.mensaje.length; i++){
-
-            var a1 = $("<a id='"+data.mensaje[i].name+"' href='#'>Aceptar</a>").click(function(e){
-                    e.preventDefault();
-                    $.getJSON(url+"tablero/ver?token="+token+"&name="+e.target.id+
-                                "&respuesta=1'",function(data) {
-                    console.log(data.mensaje);
-                    });
-            });
-
-            li.append(data.mensaje[i].name);
-            li.append(" --- ");
-            li.append(a1);
-
-            invitar.append(li);
-        }
-    });
-
 }
 
 app.initialize();
