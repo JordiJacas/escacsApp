@@ -53,7 +53,7 @@
         $('#logout').hide();
         $('#list').hide(),
         //$('table').hide();
-        //crearTablero();
+        crearTablero();
         
         $("form").submit(function(e){
             e.preventDefault();
@@ -155,7 +155,8 @@ function crearTablero(){
                              var cela = $("<td id="+i+j+" class='black'></td>");
                             }
                         }
-                    }
+                    }   
+                        cela.click(mov);
                         tablero.append(cela);
                 }
             }
@@ -201,6 +202,37 @@ function invitaciones(){
             invitar.append(li);
         }
     });
+}
+
+function mov(event){
+    var cMov = 1;
+
+    var str = event.target.id;
+    var fila = str.substring(0,1);
+    var col = str.substring(1,2);
+    var fila1;
+    var col1;
+
+    alert("fil: " + fila + "col" + col);
+
+    if(cMov == 2){
+
+        $.getJSON(url+"tablero/mover?token="
+            +token+"&name="+rival+
+            "&toFila="+fila1+"&toColumna="+col1+
+            "&fromFila="+fila+"$fromColumna="+col+,
+            function(data) {
+                console.log(data.mensaje);
+                text.text(data.mensaje);
+            })
+        cMov = 1;
+
+    }else if(cMov == 1){
+
+        var fila1 = fila;
+        var col1 = col;
+        cMov++;
+    }
 }
 
 app.initialize();

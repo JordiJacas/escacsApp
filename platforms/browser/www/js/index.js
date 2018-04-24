@@ -17,13 +17,12 @@
  * under the License.
  */
  var token = "5d539ec159b80e19b1be7997c73a15d0";
- var rival;
+ var rival = "user2";
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
  var conct;
  var inv;
-
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
 
  var app = {
@@ -54,7 +53,7 @@
         $('#logout').hide();
         $('#list').hide(),
         //$('table').hide();
-        //crearTablero();
+        crearTablero();
         
         $("form").submit(function(e){
             e.preventDefault();
@@ -100,10 +99,9 @@
 
 
 function conectado(){
+
     friends.empty();
     var li = $('<li></li>');
-
-    console.log("hola");
 
     $.getJSON(url+"usuarios/conectados?token="+token,function(data) {
         friends.append()
@@ -128,7 +126,6 @@ function conectado(){
 
 function crearTablero(){
 
-    rival = "user2";
     var torre = "t";
     tablero = $('#tablero');
 
@@ -158,7 +155,8 @@ function crearTablero(){
                              var cela = $("<td id="+i+j+" class='black'></td>");
                             }
                         }
-                    }
+                    }   
+                        cela.click(mov);
                         tablero.append(cela);
                 }
             }
@@ -170,7 +168,6 @@ function invitaciones(){
 
     invitar.empty();
     var li = $('<li></li>');
-    console.log("hola2");
 
     $.getJSON(url+"invitacion/ver?token="+token,function(data) {
         for(var i = 0; i < data.mensaje.length; i++){
@@ -205,6 +202,13 @@ function invitaciones(){
             invitar.append(li);
         }
     });
+}
+
+function mov(event){
+    var str = event.target.id;
+    var fila = str.substring(0,1);
+    var col = str.substring(1,2);
+    alert("fil: " + fila + "col" + col);
 }
 
 app.initialize();
