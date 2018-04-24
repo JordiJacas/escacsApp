@@ -16,11 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- var token;
+ var token = "5d539ec159b80e19b1be7997c73a15d0";
  var rival;
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
+ var conct;
+ var inv;
+
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
 
  var app = {
@@ -49,9 +52,10 @@
         console.log('Received Event: ' + id);
 
         $('#logout').hide();
+        $('#list').hide(),
         //$('table').hide();
-        crearTablero();
-
+        //crearTablero();
+        
         $("form").submit(function(e){
             e.preventDefault();
             var email = $(this).find("input[name='email']").val();
@@ -60,9 +64,10 @@
             $.getJSON(url+"usuarios/login?email="+email+"&password="+password,function(data) {
                 text.text(data.mensaje);
                 token = data.token;
-                friends.empty();
-                conectado();
-                invitaciones();
+
+                conct = setInterval(conectado,1500);
+                inv = setInterval(invitaciones,1500);
+
 
             }).fail( function(e) {
                 alert("error");
@@ -71,27 +76,32 @@
 
             $('form').hide();
             $('#logout').show();
+            $('#list').show();
         });
 
         $('#logout').click(function(e){
             e.preventDefault();
             $.getJSON(url+"usuarios/logout?token="+token,function(data) {
-                text.text(data.mensaje);
-                friends.empty();
-              
+                text.text(data.mensaje);  
             })
+
+            friends.empty();
+            invitar.empty();
+
+            clearInterval(conct);
+            clearInterval(inv);
+
             $('#logout').hide();
             $('form').show();
+            $('#list').hide();
         });
-
-        $('td').click(function(e){
-            e.preventDefault();
-            alert(e.target.id)})
     }
 };
 
 
 function conectado(){
+    
+    friends.empty();
     var li = $('<li></li>');
 
     $.getJSON(url+"usuarios/conectados?token="+token,function(data) {
@@ -118,7 +128,6 @@ function conectado(){
 function crearTablero(){
 
     rival = "user2";
-    token = "c0393c0a3046b02294e86fae47753a81";
     var torre = "t";
     tablero = $('#tablero');
 
@@ -135,10 +144,8 @@ function crearTablero(){
                     if(j > 8){tablero.append("<tr></tr>");}
                     else{
                         if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
-                            console.log(data.tablero[0].fila+data.tablero[0].columna)
                             if(data.tablero && data.tablero[0].fila == i && data.tablero[0].columna == j){    
                                 var cela = $("<td id="+i+j+" class='white'>hola</td>");
-                                console.log("hola");
                             
                             }else{
                                 var cela = $("<td id="+i+j+" class='white'></td>");
@@ -146,7 +153,6 @@ function crearTablero(){
                         }else{
                             if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j){
                                 var cela = $("<td id="+i+j+" class='black'>hola</td>");
-                                console.log("adios");
                             }else{
                              var cela = $("<td id="+i+j+" class='black'></td>");
                             }
@@ -161,6 +167,7 @@ function crearTablero(){
 
 function invitaciones(){
 
+    invitar.empty();
     var li = $('<li></li>');
 
     $.getJSON(url+"invitacion/ver?token="+token,function(data) {
