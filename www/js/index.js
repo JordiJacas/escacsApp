@@ -17,13 +17,12 @@
  * under the License.
  */
  var token = "5d539ec159b80e19b1be7997c73a15d0";
- var rival;
+ var rival = "user2";
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
  var conct;
  var inv;
-
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
 
  var app = {
@@ -100,7 +99,7 @@
 
 
 function conectado(){
-    
+
     friends.empty();
     var li = $('<li></li>');
 
@@ -127,7 +126,6 @@ function conectado(){
 
 function crearTablero(){
 
-    rival = "user2";
     var torre = "t";
     tablero = $('#tablero');
 
