@@ -16,13 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- var token = "5d539ec159b80e19b1be7997c73a15d0";
+ var token = "5d539ec159b80e19b1be7997c73a15d0";//"8998b8c14038fb1607c853e3db7b19b5";
  var rival = "user2";
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
  var conct;
  var inv;
+ var tablero;
+ var cMov = 1;
+ var fila1;
+ var col1;
  var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
 
  var app = {
@@ -53,6 +57,7 @@
         $('#logout').hide();
         $('#list').hide(),
         //$('table').hide();
+        //tablero = setInterval(crearTablero,1500);
         crearTablero();
         
         $("form").submit(function(e){
@@ -129,6 +134,8 @@ function crearTablero(){
     var torre = "t";
     tablero = $('#tablero');
 
+    tablero.empty();
+
     $.getJSON(url+"tablero/ver?token="+token+"&name="+rival,function(data) {
 
         for(var i=0;i<=8;i++){
@@ -142,14 +149,14 @@ function crearTablero(){
                     if(j > 8){tablero.append("<tr></tr>");}
                     else{
                         if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
-                            if(data.tablero && data.tablero[0].fila == i && data.tablero[0].columna == j){    
+                            if(data.tablero && data.tablero[0].fila == i && data.tablero[0].columna == j || data.tablero[1].fila == i && data.tablero[1].columna == j){    
                                 var cela = $("<td id="+i+j+" class='white'>hola</td>");
                             
                             }else{
                                 var cela = $("<td id="+i+j+" class='white'></td>");
                             }
                         }else{
-                            if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j){
+                            if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j || data.tablero[0].fila == i && data.tablero[0].columna == j){
                                 var cela = $("<td id="+i+j+" class='black'>hola</td>");
                             }else{
                              var cela = $("<td id="+i+j+" class='black'></td>");
@@ -205,10 +212,36 @@ function invitaciones(){
 }
 
 function mov(event){
+    console.log(cMov);
+
     var str = event.target.id;
     var fila = str.substring(0,1);
     var col = str.substring(1,2);
-    alert("fil: " + fila + "col" + col);
+
+    //alert("fil: " + fila + " col:" + col);
+
+    if(cMov == 2){
+
+        console.log(fila1);
+        console.log(col1);
+        console.log(fila);
+        console.log(col);
+
+        $.getJSON(url+"tablero/mover?token="+token+"&name="+rival+"&toFila="+fila1+"&toColumna="+col1+"&fromFila="+fila+"&fromColumna="+col,function(data) {
+            console.log(data);
+        }) 
+
+        cMov = 1;
+        console.log("entra");
+
+    }else if(cMov == 1){
+
+        fila1 = fila;
+        col1 = col;
+        cMov++;
+
+        console.log();
+    }
 }
 
 app.initialize();
