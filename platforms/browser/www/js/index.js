@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- var token = "5d539ec159b80e19b1be7997c73a15d0";//"8998b8c14038fb1607c853e3db7b19b5";
- var rival = "user2";
+ var token;
+ var rival;
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
@@ -56,9 +56,7 @@
 
         $('#logout').hide();
         $('#list').hide(),
-        //$('table').hide();
-        //tablero = setInterval(crearTablero,1500);
-        crearTablero();
+        
         
         $("form").submit(function(e){
             e.preventDefault();
@@ -69,8 +67,12 @@
                 text.text(data.mensaje);
                 token = data.token;
 
-                conct = setInterval(conectado,1500);
-                inv = setInterval(invitaciones,1500);
+                conct = setInterval(conectado,1000);
+                inv = setInterval(invitaciones,1000);
+
+                //conectado();
+                //invitaciones();
+                //crearTablero();
 
 
             }).fail( function(e) {
@@ -91,9 +93,13 @@
 
             friends.empty();
             invitar.empty();
+            tablero.empty();
 
+            
+            clearInterval(tablero);
             clearInterval(conct);
             clearInterval(inv);
+
 
             $('#logout').hide();
             $('form').show();
@@ -113,10 +119,21 @@ function conectado(){
         if(data.usernames === undefined){friends.text(data.mensaje);}
         else{
             for(var i = 0; i < data.usernames.length; i++){
+                clearInterval(conct);
                 var a = $("<a id='"+data.usernames[i]+"' href='#'>Invite</a>").click(function(e){
                     e.preventDefault();
                     $.getJSON(url+"invitacion/invitar?token="+token+"&name="+e.target.id,function(data) {
-                    console.log(data.mensaje);
+                        console.log(data.mensaje);  
+                        rival = e.target.id;
+                        console.log(rival);
+
+                        clearInterval(tablero);
+                        clearInterval(conct);
+                        clearInterval(inv);
+
+                        $('#list').hide();
+
+                        tablero = setInterval(crearTablero,3000);
                     })
                 })
 
@@ -127,18 +144,21 @@ function conectado(){
             }
         }
     })
+
+    
 }
 
 function crearTablero(){
 
-    var torre = "t";
+    var torre = "♖";
     tablero = $('#tablero');
-
-    tablero.empty();
-
+    
     $.getJSON(url+"tablero/ver?token="+token+"&name="+rival,function(data) {
 
+        console.log(data);
+
         for(var i=0;i<=8;i++){
+
             for(var j=0;j<=8;j++){ 
                 if(i == 0 && j ==0){tablero.append("<th></th>");}
                 else if(i == 0){tablero.append("<th>"+j+"</th>");}
@@ -149,18 +169,19 @@ function crearTablero(){
                     if(j > 8){tablero.append("<tr></tr>");}
                     else{
                         if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
-                            if(data.tablero && data.tablero[0].fila == i && data.tablero[0].columna == j || data.tablero[1].fila == i && data.tablero[1].columna == j){    
-                                var cela = $("<td id="+i+j+" class='white'>hola</td>");
-                            
-                            }else{
-                                var cela = $("<td id="+i+j+" class='white'></td>");
-                            }
+                            if(data.tablero){
+                                if(data.tablero[0].fila == i && data.tablero[0].columna == j || 
+                                    data.tablero[1].fila == i && data.tablero[1].columna == j){    
+                                    var cela = $("<td id="+i+j+" class='white'>"+torre+"</td>");
+                                }else{var cela = $("<td id="+i+j+" class='white'></td>");}
+                            }else{var cela = $("<td id="+i+j+" class='white'></td>");}
                         }else{
-                            if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j || data.tablero[0].fila == i && data.tablero[0].columna == j){
-                                var cela = $("<td id="+i+j+" class='black'>hola</td>");
-                            }else{
-                             var cela = $("<td id="+i+j+" class='black'></td>");
-                            }
+                            if(data.tablero){
+                                if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j || 
+                                    data.tablero[0].fila == i && data.tablero[0].columna == j){
+                                    var cela = $("<td id="+i+j+" class='black'>"+torre+"</td>");
+                                }else{var cela = $("<td id="+i+j+" class='black'></td>");}
+                            }else{var cela = $("<td id="+i+j+" class='black'></td>");}
                         }
                     }   
                         cela.click(mov);
@@ -169,26 +190,37 @@ function crearTablero(){
             }
         }
     }); 
+
+
 }
 
 function invitaciones(){
 
-    invitar.empty();
     var li = $('<li></li>');
 
     $.getJSON(url+"invitacion/ver?token="+token,function(data) {
         for(var i = 0; i < data.mensaje.length; i++){
+            clearInterval(inv);
 
             var a1 = $("<a id='"+data.mensaje[i].name+"' href='#'>Aceptar</a>").click(function(e){
 
                     $.getJSON(url+"invitacion/responder?token="+token+"&name="+e.target.id+
                                 "&respuesta=1'",function(data) {
                     console.log(data.mensaje);
+                        li.remove();
+                        rival = e.target.id;
+
+                        clearInterval(conct);
+                        clearInterval(inv);
+                        clearInterval(tablero);
+
+                        $('#list').hide();
+
+                        tablero = setInterval(crearTablero,3000);
                     })
 
-                    rival = e.target.id;
+                   
                     $('table').show();
-                    crearTablero();
                 })
 
 
@@ -196,7 +228,8 @@ function invitaciones(){
                     e.preventDefault();
                     $.getJSON(url+"invitacion/responder?token="+token+"&name="+e.target.id+
                                 "&respuesta=0'",function(data) {
-                    console.log(data.mensaje);
+                        console.log(data.mensaje);
+                        li.remove();
                     })
                 })
 
@@ -209,39 +242,28 @@ function invitaciones(){
             invitar.append(li);
         }
     });
+
+    
 }
 
 function mov(event){
-    console.log(cMov);
-
     var str = event.target.id;
     var fila = str.substring(0,1);
     var col = str.substring(1,2);
 
-    //alert("fil: " + fila + " col:" + col);
-
     if(cMov == 2){
-
-        console.log(fila1);
-        console.log(col1);
-        console.log(fila);
-        console.log(col);
-
         $.getJSON(url+"tablero/mover?token="+token+"&name="+rival+"&toFila="+fila1+"&toColumna="+col1+"&fromFila="+fila+"&fromColumna="+col,function(data) {
-            console.log(data);
+            alert(data.mensaje);
         }) 
 
         cMov = 1;
-        console.log("entra");
-
     }else if(cMov == 1){
 
         fila1 = fila;
         col1 = col;
         cMov++;
-
-        console.log();
     }
+
 }
 
 app.initialize();
