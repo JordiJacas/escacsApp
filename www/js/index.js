@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- var token = "87366b59bc3f36d74525ee4442f23b14";
- var rival = "user2";
+ var token;
+ var rival;
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
@@ -27,7 +27,7 @@
  var cMov = 1;
  var fila1;
  var col1;
- var url = "http://localhost:8080/api/"//"https://escacsjordi.herokuapp.com/api/";
+ var url = "https://escacsjordi.herokuapp.com/api/";
 
  var app = {
     // Application Constructor
