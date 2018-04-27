@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- var token;
- var rival;
+ var token = "87366b59bc3f36d74525ee4442f23b14";
+ var rival = "user2";
  var text = $("#text");
  var friends = $("#friends");
  var invitar = $("#invite");
@@ -69,12 +69,6 @@
 
                 conct = setInterval(conectado,1000);
                 inv = setInterval(invitaciones,1000);
-
-                //conectado();
-                //invitaciones();
-                //crearTablero();
-
-
             }).fail( function(e) {
                 alert("error");
                 console.log(e);
@@ -104,6 +98,7 @@
             $('#logout').hide();
             $('form').show();
             $('#list').hide();
+            $('#tablero').hide();
         });
     }
 };
@@ -152,41 +147,45 @@ function crearTablero(){
     
     $.getJSON(url+"tablero/ver?token="+token+"&name="+rival,function(data) {
 
-        for(var i=0;i<=8;i++){
 
+        
+        for(var i=0;i<=8;i++){
             for(var j=0;j<=8;j++){ 
-                if(i == 0 && j ==0){tablero.append("<th></th>");}
-                else if(i == 0){tablero.append("<th>"+j+"</th>");}
-                else if(j == 0){
-                    tablero.append("<tr></tr> ");
-                    tablero.append("<th>"+i+"</th>");
-                }else{
-                    if(j > 8){tablero.append("<tr></tr>");}
-                    else{
-                        if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
-                            if(data.tablero){
-                                if(data.tablero[0].fila == i && data.tablero[0].columna == j || 
-                                    data.tablero[1].fila == i && data.tablero[1].columna == j){    
-                                    var cela = $("<td id="+i+j+" class='white'>"+torre+"</td>");
+                
+                    if(i == 0 && j ==0){tablero.append("<th></th>");}
+                    else if(i == 0){tablero.append("<th>"+j+"</th>");}
+                    else if(j == 0){
+                        tablero.append("<tr></tr> ");
+                        tablero.append("<th>"+i+"</th>");
+                    }else{
+                        if(j > 8){tablero.append("<tr></tr>");}
+                        else{
+                            if((i % 2 == 0 && j % 2 == 0)||(i % 2 != 0 && j % 2 != 0)){
+                                if(data.tablero){
+                                    if(data.tablero[0].fila == i && data.tablero[0].columna == j || 
+                                        data.tablero[1].fila == i && data.tablero[1].columna == j){ 
+                                            var cela = $("<td id="+i+j+" class='white'>"+torre+"</td>");
+                                        }else{
+                                            var cela = $("<td id="+i+j+" class='white'></td>");
+                                        }
                                 }else{var cela = $("<td id="+i+j+" class='white'></td>");}
-                            }else{var cela = $("<td id="+i+j+" class='white'></td>");}
-                        }else{
-                            if(data.tablero){
-                                if(data.tablero && data.tablero[1].fila == i && data.tablero[1].columna == j || 
-                                    data.tablero[0].fila == i && data.tablero[0].columna == j){
-                                    var cela = $("<td id="+i+j+" class='black'>"+torre+"</td>");
+                            }else{
+                                if(data.tablero){
+                                    if(data.tablero[1].fila == i && data.tablero[1].columna == j || 
+                                        data.tablero[0].fila == i && data.tablero[0].columna == j){
+                                            var cela = $("<td id="+i+j+" class='black'>"+torre+"</td>");
+                                        }else{
+                                            var cela = $("<td id="+i+j+" class='black'></td>");
+                                        }
                                 }else{var cela = $("<td id="+i+j+" class='black'></td>");}
-                            }else{var cela = $("<td id="+i+j+" class='black'></td>");}
-                        }
-                    }   
+                            }
+                        }   
                         cela.click(mov);
                         tablero.append(cela);
-                }
+                    }
             }
         }
     }); 
-
-
 }
 
 function invitaciones(){
